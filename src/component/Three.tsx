@@ -1,17 +1,14 @@
-
-import { createRoot } from 'react-dom/client'
-import React, { useRef, useState } from 'react'
+import * as THREE from 'three'
+import React, { Suspense, useRef, useState } from 'react'
 import { Canvas, useFrame } from '@react-three/fiber'
+import Model from './Model'
+import { Html, useProgress } from '@react-three/drei'
 
-function Box(props) {
-  // This reference will give us direct access to the mesh
-  const mesh = useRef()
-  // Set up state for the hovered and active state
+function Box(props: JSX.IntrinsicElements['mesh']) {
+  const mesh = useRef<THREE.Mesh>(null!)
   const [hovered, setHover] = useState(false)
   const [active, setActive] = useState(false)
-  // Subscribe this component to the render-loop, rotate the mesh every frame
   useFrame((state, delta) => (mesh.current.rotation.x += 0.01))
-  // Return view, these are regular three.js elements expressed in JSX
   return (
     <mesh
       {...props}
@@ -25,16 +22,24 @@ function Box(props) {
     </mesh>
   )
 }
+function Loader() {
+  const { progress } = useProgress()
+  return <Html center>{progress} % Loading Now</Html>
+}
 
 const Three: React.VFC = () => {
   return (
     <div>
-      <Canvas>
+      <Canvas style={{height : "100vh"}}>
         <ambientLight />
         <pointLight position={[10, 10, 10]} />
+        <Suspense fallback={<Loader />}>
+          <Model scale={5}/>
+        </Suspense>
         <Box position={[-1.2, 0, 0]} />
         <Box position={[1.2, 0, 0]} />
-      </Canvas>,
+
+      </Canvas>
     </div>
   )
 }

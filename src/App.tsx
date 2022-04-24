@@ -1,13 +1,12 @@
 import { useState } from "react";
 import "./App.css";
+import Three from "./component/Three";
 
 function App() {
-  const [count, setCount] = useState(0);
 
   return (
-    <div className="App">
-      <header className="App-header">
-      </header>
+    <div >
+      <Three />
     </div>
   );
 }
